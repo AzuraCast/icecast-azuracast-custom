@@ -46,6 +46,7 @@ jobs:
           tags: |
             type=raw,value=latest,enable=${{ endsWith(github.ref, github.event.repository.default_branch) }}
             type=raw,value=latest-debian,enable=${{ endsWith(github.ref, github.event.repository.default_branch) }}
+            type=ref,event=branch
             type=ref,event=tag
       
       - name: Build Docker Metadata (Alpine)
@@ -60,6 +61,7 @@ jobs:
             suffix=-alpine
           tags: |
             type=raw,value=latest,enable=${{ endsWith(github.ref, github.event.repository.default_branch) }}
+            type=ref,event=branch
             type=ref,event=tag
 
       - name: Build and push
