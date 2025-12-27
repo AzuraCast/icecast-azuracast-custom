@@ -2,14 +2,25 @@ FROM debian:trixie-slim
 
 RUN apt-get update \
     && apt-get install -q -y --no-install-recommends \
-        apt-transport-https ca-certificates curl tar \
-        libxml2 openssl \
-        build-essential libxslt1-dev libvorbis-dev libssl-dev libcurl4-openssl-dev
+    git apt-transport-https ca-certificates curl tar \
+    build-essential autoconf automake libtool \
+    libxml2 openssl \
+    librhash-dev libxslt1-dev libvorbis-dev libssl-dev libcurl4-openssl-dev
+
+RUN mkdir -p /tmp/libigloo_build \
+    && cd /tmp/libigloo_build \
+    && git clone --recursive https://gitlab.xiph.org/xiph/icecast-libigloo.git . \
+    && sh ./autogen.sh \
+    && ./configure \
+    && make \
+    && make install \
+    && cd /tmp \
+    && rm -rf /tmp/libigloo_build
 
 RUN mkdir -p /tmp/icecast_build \
     && cd /tmp/icecast_build \
-    && curl -fsSL https://github.com/karlheyes/icecast-kh/archive/refs/tags/icecast-2.4.0-kh22.tar.gz -o icecast.tar.gz \
-    && tar -xvzf icecast.tar.gz --strip-components=1 \
+    && git clone --recursive https://gitlab.xiph.org/xiph/icecast-server.git . \
+    && sh ./autogen.sh \
     && ./configure \
     && make \
     && make install \

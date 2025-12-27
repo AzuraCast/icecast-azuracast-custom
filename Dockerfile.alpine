@@ -1,12 +1,23 @@
-FROM alpine:3.20
+FROM alpine:3.22
 
 RUN apk add --no-cache curl git ca-certificates \
-    alpine-sdk libxml2-dev libxslt-dev libvorbis-dev openssl-dev curl-dev
+    alpine-sdk autoconf automake libtool build-base \
+    rhash-dev libxml2-dev libxslt-dev libvorbis-dev openssl-dev curl-dev
+
+RUN mkdir -p /tmp/libigloo_build \
+    && cd /tmp/libigloo_build \
+    && git clone --recursive https://gitlab.xiph.org/xiph/icecast-libigloo.git . \
+    && sh ./autogen.sh \
+    && ./configure \
+    && make \
+    && make install \
+    && cd /tmp \
+    && rm -rf /tmp/libigloo_build
 
 RUN mkdir -p /tmp/icecast_build \
     && cd /tmp/icecast_build \
-    && curl -fsSL https://github.com/karlheyes/icecast-kh/archive/refs/tags/icecast-2.4.0-kh22.tar.gz -o icecast.tar.gz \
-    && tar -xvzf icecast.tar.gz --strip-components=1 \
+    && git clone --recursive https://gitlab.xiph.org/xiph/icecast-server.git . \
+    && sh ./autogen.sh \
     && ./configure \
     && make \
     && make install \

@@ -3,6 +3,7 @@ on:
   push:
     branches:
       - main
+      - 'feat/*'
     tags:
       - '*'
   schedule:
@@ -39,29 +40,19 @@ jobs:
         uses: docker/metadata-action@v4
         with:
           images: |
-            ghcr.io/azuracast/icecast-kh-ac
+            ghcr.io/azuracast/icecast-ac
           flavor: latest=false
           tags: |
             type=raw,value=latest,enable=${{ endsWith(github.ref, github.event.repository.default_branch) }}
             type=raw,value=latest-debian,enable=${{ endsWith(github.ref, github.event.repository.default_branch) }}
             type=ref,event=tag
-
-      - name: Publish to Docker Hub (Debian)
-        uses: depot/build-push-action@v1
-        with:
-          context: .
-          file: Dockerfile.debian
-          push: true
-          platforms: linux/amd64,linux/arm64
-          tags: ${{ steps.meta_debian.outputs.tags }}
-          labels: ${{ steps.meta_debian.outputs.labels }}
       
       - name: Build Docker Metadata (Alpine)
         id: meta_alpine
         uses: docker/metadata-action@v4
         with:
           images: |
-            ghcr.io/azuracast/icecast-kh-ac
+            ghcr.io/azuracast/icecast-ac
           flavor: |
             latest=false
             suffix=-alpine
@@ -69,12 +60,12 @@ jobs:
             type=raw,value=latest,enable=${{ endsWith(github.ref, github.event.repository.default_branch) }}
             type=ref,event=tag
 
-      - name: Publish to Docker Hub (Alpine)
-        uses: depot/build-push-action@v1
+      - name: Build and push
+        uses: depot/bake-action@v1
         with:
-          context: .
-          file: Dockerfile.alpine
           push: true
-          platforms: linux/amd64,linux/arm64
-          tags: ${{ steps.meta_alpine.outputs.tags }}
-          labels: ${{ steps.meta_alpine.outputs.labels }}
+          set: |
+            debian.tags=${{ steps.meta_debian.outputs.tags }}
+            debian.labels=${{ steps.meta_debian.outputs.labels }}
+            alpine.tags=${{ steps.meta_alpine.outputs.tags }}
+            alpine.labels=${{ steps.meta_alpine.outputs.labels }}
