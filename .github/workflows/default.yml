@@ -37,7 +37,7 @@ jobs:
 
       - name: Build Docker Metadata (Debian)
         id: meta_debian
-        uses: docker/metadata-action@v4
+        uses: docker/metadata-action@5
         with:
           bake-target: debian
           images: |
@@ -50,7 +50,7 @@ jobs:
       
       - name: Build Docker Metadata (Alpine)
         id: meta_alpine
-        uses: docker/metadata-action@v4
+        uses: docker/metadata-action@v5
         with:
           bake-target: alpine
           images: |
