@@ -37,7 +37,7 @@ jobs:
 
       - name: Build Docker Metadata (Debian)
         id: meta_debian
-        uses: docker/metadata-action@5
+        uses: docker/metadata-action@v5
         with:
           bake-target: debian
           images: |
