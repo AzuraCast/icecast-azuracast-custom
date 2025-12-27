@@ -39,6 +39,7 @@ jobs:
         id: meta_debian
         uses: docker/metadata-action@v4
         with:
+          bake-target: debian
           images: |
             ghcr.io/azuracast/icecast-ac
           flavor: latest=false
@@ -51,6 +52,7 @@ jobs:
         id: meta_alpine
         uses: docker/metadata-action@v4
         with:
+          bake-target: alpine
           images: |
             ghcr.io/azuracast/icecast-ac
           flavor: |
@@ -64,8 +66,9 @@ jobs:
         uses: depot/bake-action@v1
         with:
           push: true
-          set: |
-            debian.tags=${{ steps.meta_debian.outputs.tags }}
-            debian.labels=${{ steps.meta_debian.outputs.labels }}
-            alpine.tags=${{ steps.meta_alpine.outputs.tags }}
-            alpine.labels=${{ steps.meta_alpine.outputs.labels }}
+          files: |
+            ./docker-compose.yml
+            cwd://${{ steps.meta_debian.outputs.bake-file-tags }}
+            cwd://${{ steps.meta_debian.outputs.bake-file-labels }}
+            cwd://${{ steps.meta_alpine.outputs.bake-file-tags }}
+            cwd://${{ steps.meta_alpine.outputs.bake-file-labels }}
