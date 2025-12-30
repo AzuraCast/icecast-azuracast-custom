@@ -1,0 +1,14 @@
+services:
+  alpine:
+    build:
+      dockerfile: Dockerfile.alpine
+      platforms:
+        - linux/amd64
+        - linux/arm64
+  
+  debian:
+    build:
+      dockerfile: Dockerfile.debian
+      platforms:
+        - linux/amd64
+        - linux/arm64
