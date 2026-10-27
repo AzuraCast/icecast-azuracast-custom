@@ -1,4 +1,4 @@
-FROM alpine:3.22
+FROM alpine:3.21
 
 RUN apk add --no-cache curl git ca-certificates \
     alpine-sdk libxml2-dev libxslt-dev libvorbis-dev openssl-dev curl-dev
